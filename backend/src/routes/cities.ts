@@ -45,20 +45,10 @@ router.get("/:id", (req, res) => {
 // Update city by id
 router.put("/:id", (req, res) => {
   const id = Number(req.params.id);
-  const {
-    name,
-    state,
-    country,
-    touristRating,
-    dateEstablished,
-    estimatedPopulation,
-  } = req.body;
+  const { touristRating, dateEstablished, estimatedPopulation } = req.body;
   const result = db
     .update(cities)
     .set({
-      name,
-      state,
-      country,
       touristRating,
       dateEstablished,
       estimatedPopulation,
