@@ -8,10 +8,24 @@ app.use(express.json());
 
 // Create a city
 app.post("/cities", (req, res) => {
-  const { name, state, country, touristRating } = req.body;
+  const {
+    name,
+    state,
+    country,
+    touristRating,
+    dateEstablished,
+    estimatedPopulation,
+  } = req.body;
   const result = db
     .insert(cities)
-    .values({ name, state, country, touristRating })
+    .values({
+      name,
+      state,
+      country,
+      touristRating,
+      dateEstablished,
+      estimatedPopulation,
+    })
     .run();
   res.json(result);
 });
@@ -32,10 +46,24 @@ app.get("/cities/:id", (req, res) => {
 // Update city by id
 app.put("/cities/:id", (req, res) => {
   const id = Number(req.params.id);
-  const { name, state, country, touristRating } = req.body;
+  const {
+    name,
+    state,
+    country,
+    touristRating,
+    dateEstablished,
+    estimatedPopulation,
+  } = req.body;
   const result = db
     .update(cities)
-    .set({ name, state, country, touristRating })
+    .set({
+      name,
+      state,
+      country,
+      touristRating,
+      dateEstablished,
+      estimatedPopulation,
+    })
     .where(eq(cities.id, id))
     .run();
   res.json(result);
