@@ -8,7 +8,9 @@
     "push": "drizzle-kit push",
     "db:setup": "drizzle-kit generate && drizzle-kit push",
     "build": "tsup",
-    "start": "node dist/index.js"
+    "start": "node dist/index.js",
+    "test": "jest",
+    "test:watch": "jest --watch"
   },
   "author": "",
   "license": "ISC",
@@ -24,7 +26,10 @@
     "@types/better-sqlite3": "^7.6.13",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
+    "@types/jest": "^29.5.12",
     "drizzle-kit": "^0.31.4",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.2",
     "tsx": "^4.20.4"
   }
 }
