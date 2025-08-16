@@ -23,6 +23,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Plus } from "lucide-react";
+
 import useCreateCity from "@/hooks/useCreateCity";
 
 const citySchema = z.object({
@@ -48,7 +50,7 @@ export function AddCity() {
       name: "",
       state: "",
       country: "",
-      touristRating: 0,
+      touristRating: 5,
       dateEstablished: "",
       estimatedPopulation: 0,
     },
@@ -77,7 +79,8 @@ export function AddCity() {
           className="space-y-4 max-w-md"
         >
           <DialogTrigger asChild>
-            <Button variant="outline" className="cursor-pointer">
+            <Button className="cursor-pointer">
+              <Plus className="h-4 w-4" />
               Add City
             </Button>
           </DialogTrigger>
