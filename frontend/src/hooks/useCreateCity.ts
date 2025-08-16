@@ -4,7 +4,7 @@ import { useMutation } from "@tanstack/react-query";
 function useCreateCity() {
   return useMutation({
     mutationFn: async (data: CityFormValues) => {
-      const res = await fetch("/api/cities", {
+      const res = await fetch("http://localhost:3000/cities", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -15,6 +15,14 @@ import {
 } from "@/components/ui/dialog";
 
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+import {
   Form,
   FormControl,
   FormField,
@@ -27,6 +35,8 @@ import { Plus } from "lucide-react";
 
 import useCreateCity from "@/hooks/useCreateCity";
 
+import StarRating from "./StarRating";
+
 const citySchema = z.object({
   name: z.string().min(2, "City name must be at least 2 characters."),
   state: z.string().min(2, "State must be at least 2 characters."),
@@ -35,8 +45,8 @@ const citySchema = z.object({
     .number()
     .min(1, "Minimum rating is 1")
     .max(5, "Maximum rating is 5"),
-  dateEstablished: z.string().refine((val) => !isNaN(Date.parse(val)), {
-    message: "Invalid date",
+  dateEstablished: z.string().regex(/^\d+\s?(AD|BC)$/, {
+    message: "Enter a year like '1820 AD' or '230 BC'",
   }),
   estimatedPopulation: z.number().positive("Population must be greater than 0"),
 });
@@ -59,6 +69,7 @@ export function AddCity() {
   const createCityMutation = useCreateCity();
 
   function onSubmit(values: CityFormValues) {
+    console.log(values);
     createCityMutation.mutate(values, {
       onSuccess: () => {
         form.reset();
@@ -73,22 +84,19 @@ export function AddCity() {
 
   return (
     <Dialog>
-      <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="space-y-4 max-w-md"
-        >
-          <DialogTrigger asChild>
-            <Button className="cursor-pointer">
-              <Plus className="h-4 w-4" />
-              Add City
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px]">
-            <DialogHeader>
-              <DialogTitle>Add City</DialogTitle>
-              <DialogDescription>Add a new city to the list</DialogDescription>
-            </DialogHeader>
+      <DialogTrigger asChild>
+        <Button className="cursor-pointer">
+          <Plus className="h-4 w-4" />
+          Add City
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>Add City</DialogTitle>
+          <DialogDescription>Add a new city to the list</DialogDescription>
+        </DialogHeader>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <div className="grid gap-4">
               <div className="grid gap-3">
                 <FormField
@@ -111,9 +119,9 @@ export function AddCity() {
                   name="state"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>State</FormLabel>
+                      <FormLabel>State / Region</FormLabel>
                       <FormControl>
-                        <Input placeholder="e.g. France" {...field} />
+                        <Input placeholder="e.g. Ile-de-France" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -143,7 +151,30 @@ export function AddCity() {
                     <FormItem>
                       <FormLabel>Tourist Rating</FormLabel>
                       <FormControl>
-                        <Input placeholder="e.g. Paris" {...field} />
+                        <Select
+                          value={field.value?.toString()}
+                          onValueChange={(value) =>
+                            field.onChange(parseInt(value))
+                          }
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select rating">
+                              {field.value && (
+                                <StarRating rating={field.value} />
+                              )}
+                            </SelectValue>
+                          </SelectTrigger>
+                          <SelectContent>
+                            {[1, 2, 3, 4, 5].map((rating) => (
+                              <SelectItem
+                                key={rating}
+                                value={rating.toString()}
+                              >
+                                <StarRating rating={rating} />
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -157,9 +188,38 @@ export function AddCity() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Date Established</FormLabel>
-                      <FormControl>
-                        <Input placeholder="e.g. Paris" {...field} />
-                      </FormControl>
+                      <div className="flex gap-2">
+                        <FormControl>
+                          <Input
+                            type="number"
+                            placeholder="Year"
+                            min={1}
+                            {...field}
+                            value={field.value ? field.value.split(" ")[0] : ""}
+                            onChange={(e) => {
+                              const currentEra =
+                                field.value?.split(" ")[1] || "AD";
+                              field.onChange(`${e.target.value} ${currentEra}`);
+                            }}
+                          />
+                        </FormControl>
+                        <FormControl>
+                          <select
+                            className="border rounded px-2 py-1"
+                            value={field.value?.split(" ")[1] || "AD"}
+                            onChange={(e) => {
+                              const currentYear =
+                                field.value?.split(" ")[0] || "";
+                              field.onChange(
+                                `${currentYear} ${e.target.value}`
+                              );
+                            }}
+                          >
+                            <option value="AD">AD</option>
+                            <option value="BC">BC</option>
+                          </select>
+                        </FormControl>
+                      </div>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -173,7 +233,15 @@ export function AddCity() {
                     <FormItem>
                       <FormLabel>Estimated Population</FormLabel>
                       <FormControl>
-                        <Input placeholder="e.g. Paris" {...field} />
+                        <Input
+                          type="number"
+                          placeholder="e.g. 2161000"
+                          {...field}
+                          value={field.value || ""}
+                          onChange={(e) =>
+                            field.onChange(parseInt(e.target.value) || 0)
+                          }
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -183,13 +251,21 @@ export function AddCity() {
             </div>
             <DialogFooter>
               <DialogClose asChild>
-                <Button variant="outline">Cancel</Button>
+                <Button variant="outline" className="cursor-pointer">
+                  Cancel
+                </Button>
               </DialogClose>
-              <Button type="submit">Add City</Button>
+              <Button
+                type="submit"
+                className="cursor-pointer"
+                disabled={createCityMutation.isPending}
+              >
+                {createCityMutation.isPending ? "Adding..." : "Add City"}
+              </Button>
             </DialogFooter>
-          </DialogContent>
-        </form>
-      </Form>
+          </form>
+        </Form>
+      </DialogContent>
     </Dialog>
   );
 }
