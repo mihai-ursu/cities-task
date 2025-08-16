@@ -1,10 +1,9 @@
 {
     "scripts": {
-        "dotenvx": "dotenvx",
-        "build": "dotenvx run -- turbo build",
+        "build": "turbo build",
         "dev": "turbo dev",
-        "lint": "dotenvx run -- turbo lint",
-        "start": "node backend/dist/index.js"
+        "lint": "turbo lint",
+        "test": "turbo test"
     },
     "dependencies": {
         "turbo": "^2.5.5"

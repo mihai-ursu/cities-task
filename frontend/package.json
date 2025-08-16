@@ -8,7 +8,8 @@
     "build": "vite build",
     "check-types": "tsc --noEmit",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "echo 'No tests available for frontend'"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.1",
