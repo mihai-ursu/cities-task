@@ -1,0 +1,17 @@
+{
+    "scripts": {
+        "dotenvx": "dotenvx",
+        "build": "dotenvx run -- turbo build",
+        "dev": "turbo dev",
+        "lint": "dotenvx run -- turbo lint",
+        "start": "node backend/dist/index.js"
+    },
+    "dependencies": {
+        "turbo": "^2.5.5"
+    },
+    "workspaces": [
+        "backend",
+        "frontend"
+    ],
+    "packageManager": "npm@8.5.0"
+}
