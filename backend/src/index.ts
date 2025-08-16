@@ -1,81 +1,34 @@
+import "dotenv/config";
 import express from "express";
-import { db } from "./db/db";
-import { cities } from "./db/schema";
-import { eq } from "drizzle-orm";
+import citiesRouter from "./routes/cities";
+import countryInfoRouter from "./routes/countryInfo";
+import weatherRouter from "./routes/weather";
 
 const app = express();
 app.use(express.json());
 
-// Create a city
-app.post("/cities", (req, res) => {
-  const {
-    name,
-    state,
-    country,
-    touristRating,
-    dateEstablished,
-    estimatedPopulation,
-  } = req.body;
-  const result = db
-    .insert(cities)
-    .values({
-      name,
-      state,
-      country,
-      touristRating,
-      dateEstablished,
-      estimatedPopulation,
-    })
-    .run();
-  res.json(result);
-});
+// Route handlers
+app.use("/cities", citiesRouter);
+app.use("/country-info", countryInfoRouter);
+app.use("/weather", weatherRouter);
 
-// Get all cities
-app.get("/cities", (req, res) => {
-  const result = db.select().from(cities).all();
-  res.json(result);
-});
-
-// Get city by id
-app.get("/cities/:id", (req, res) => {
-  const id = Number(req.params.id);
-  const result = db.select().from(cities).where(eq(cities.id, id)).get();
-  res.json(result || null);
-});
-
-// Update city by id
-app.put("/cities/:id", (req, res) => {
-  const id = Number(req.params.id);
-  const {
-    name,
-    state,
-    country,
-    touristRating,
-    dateEstablished,
-    estimatedPopulation,
-  } = req.body;
-  const result = db
-    .update(cities)
-    .set({
-      name,
-      state,
-      country,
-      touristRating,
-      dateEstablished,
-      estimatedPopulation,
-    })
-    .where(eq(cities.id, id))
-    .run();
-  res.json(result);
-});
-
-// Delete city by id
-app.delete("/cities/:id", (req, res) => {
-  const id = Number(req.params.id);
-  const result = db.delete(cities).where(eq(cities.id, id)).run();
-  res.json(result);
+// Health check endpoint
+app.get("/health", (req, res) => {
+  res.json({
+    status: "OK",
+    timestamp: new Date().toISOString(),
+    endpoints: {
+      cities: "/cities",
+      countryInfo: "/country-info",
+      weather: "/weather",
+    },
+  });
 });
 
 app.listen(3000, () => {
   console.log("Server running on http://localhost:3000");
+  console.log("\nAvailable endpoints:");
+  console.log("• Cities: http://localhost:3000/cities");
+  console.log("• Country Info: http://localhost:3000/country-info");
+  console.log("• Weather: http://localhost:3000/weather");
 });
