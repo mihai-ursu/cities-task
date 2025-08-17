@@ -2,7 +2,7 @@ import { useState } from "react";
 import SearchForm from "./components/SearchForm/SearchForm";
 import { useGetAllCitiesByName } from "./hooks/useGetAllCitiesByName";
 import City from "@/components/CIty/City";
-import type { CityType } from "./types/city";
+import type { CityType } from "./types/city.interface";
 
 function App() {
   const [searchQuery, setSearchQuery] = useState("");

@@ -37,17 +37,9 @@ export class CountryService {
           official: country.name?.official || "",
         },
         capital: country.capital || [],
-        population: country.population || 0,
-        area: country.area || 0,
-        region: country.region || "",
-        subregion: country.subregion || "",
-        languages: country.languages || {},
         currencies: country.currencies || {},
-        flag: country.flag || "",
-        coatOfArms: {
-          png: country.coatOfArms?.png || "",
-          svg: country.coatOfArms?.svg || "",
-        },
+        cca2: country.cca2 || "",
+        cca3: country.cca3 || "",
       };
     } catch (error) {
       return {

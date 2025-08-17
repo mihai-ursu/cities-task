@@ -44,7 +44,7 @@ export class WeatherService {
         );
       }
 
-      const data = await response.json();
+      const data = (await response.json()) as WeatherInfo;
       console.log(`✅ Weather data retrieved for: ${data.name}`);
 
       return data;

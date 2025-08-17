@@ -5,11 +5,6 @@ export interface CountryInfo {
     official: string;
   };
   capital: string[];
-  population: number;
-  area: number;
-  region: string;
-  subregion: string;
-  languages: Record<string, string>;
   currencies: Record<
     string,
     {
@@ -17,11 +12,8 @@ export interface CountryInfo {
       symbol: string;
     }
   >;
-  flag: string;
-  coatOfArms: {
-    png: string;
-    svg: string;
-  };
+  cca2: string;
+  cca3: string;
 }
 
 // Weather API Response Types

@@ -19,24 +19,14 @@ describe("CountryService", () => {
         official: "French Republic",
       },
       capital: ["Paris"],
-      population: 67391582,
-      area: 643801,
-      region: "Europe",
-      subregion: "Western Europe",
-      languages: {
-        fra: "French",
-      },
       currencies: {
         EUR: {
           name: "Euro",
           symbol: "€",
         },
       },
-      flag: "🇫🇷",
-      coatOfArms: {
-        png: "https://mainfacts.com/media/images/coats_of_arms/fr.png",
-        svg: "https://mainfacts.com/media/images/coats_of_arms/fr.svg",
-      },
+      cca2: "FR",
+      cca3: "FRA",
     };
 
     it("should return country information for valid country name", async () => {
@@ -62,24 +52,14 @@ describe("CountryService", () => {
           official: "French Republic",
         },
         capital: ["Paris"],
-        population: 67391582,
-        area: 643801,
-        region: "Europe",
-        subregion: "Western Europe",
-        languages: {
-          fra: "French",
-        },
         currencies: {
           EUR: {
             name: "Euro",
             symbol: "€",
           },
         },
-        flag: "🇫🇷",
-        coatOfArms: {
-          png: "https://mainfacts.com/media/images/coats_of_arms/fr.png",
-          svg: "https://mainfacts.com/media/images/coats_of_arms/fr.svg",
-        },
+        cca2: "FR",
+        cca3: "FRA",
       });
     });
 
