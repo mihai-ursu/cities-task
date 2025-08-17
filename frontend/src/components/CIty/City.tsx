@@ -2,6 +2,7 @@ import type { CityType } from "@/types/city.interface";
 import { useGetCountryByName } from "@/hooks/useGetCountryByName";
 import { useGetCityWeather } from "@/hooks/useGetCityWeather";
 import WeatherIcon from "@/components/WeatherIcon/WeatherIcon";
+import DeleteCity from "./DeleteCity";
 
 export default function City({ city }: { city: CityType }) {
   const {
@@ -21,7 +22,9 @@ export default function City({ city }: { city: CityType }) {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
           <h3 className="text-xl font-bold text-gray-800">{city.name}</h3>
+
           <div className="space-y-1 text-sm">
+            <DeleteCity city={city} />
             <div>
               <span className="font-medium">ID:</span> {city.id}
             </div>
