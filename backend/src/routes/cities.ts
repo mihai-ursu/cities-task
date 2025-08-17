@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { db } from "../db/db";
 import { cities } from "../db/schema";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 
 const router = Router();
 
@@ -32,6 +32,17 @@ router.post("/", (req, res) => {
 // Get all cities
 router.get("/", (req, res) => {
   const result = db.select().from(cities).all();
+  res.json(result);
+});
+
+// Get all cities that have a specific name (case-insensitive)
+router.get("/name/:name", (req, res) => {
+  const name = req.params.name;
+  const result = db
+    .select()
+    .from(cities)
+    .where(sql`LOWER(${cities.name}) = LOWER(${name})`)
+    .all();
   res.json(result);
 });
 

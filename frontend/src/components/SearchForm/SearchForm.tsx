@@ -11,13 +11,18 @@ import {
 import { Search } from "lucide-react";
 import { AddCity } from "../AddCity/AddCity";
 
-export default function SearchForm() {
+interface SearchFormProps {
+  onSearch: (query: string) => void;
+}
+
+export default function SearchForm({ onSearch }: SearchFormProps) {
   const [searchQuery, setSearchQuery] = useState("");
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Searching for city:", searchQuery);
-    // Add your search logic here
+    if (searchQuery.trim()) {
+      onSearch(searchQuery.trim());
+    }
   };
 
   return (
