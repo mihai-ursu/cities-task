@@ -73,7 +73,6 @@ export function AddCity() {
   const createCityMutation = useCreateCity();
 
   function onSubmit(values: CityFormValues) {
-    console.log(values);
     createCityMutation.mutate(values, {
       onSuccess: () => {
         form.reset();

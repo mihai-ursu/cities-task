@@ -8,7 +8,6 @@ function App() {
   const [searchQuery, setSearchQuery] = useState("");
   const [shouldSearch, setShouldSearch] = useState(false);
 
-  // Only call the hook when we actually want to search
   const {
     data: cities,
     isLoading,
@@ -16,8 +15,6 @@ function App() {
   } = useGetAllCitiesByName(searchQuery, {
     enabled: shouldSearch && searchQuery.length > 0,
   });
-
-  console.log(cities);
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
@@ -35,7 +32,6 @@ function App() {
         </div>
         <SearchForm onSearch={handleSearch} />
 
-        {/* Display search results */}
         {isLoading && <div className="text-center">Loading...</div>}
 
         {error && (
