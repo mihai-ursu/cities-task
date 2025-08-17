@@ -12,6 +12,7 @@ import {
 } from "../ui/dialog";
 import type { CityType } from "@/types/city.interface";
 import { Trash } from "lucide-react";
+import { toast } from "sonner";
 
 export default function DeleteCity({ city }: { city: CityType }) {
   const [open, setOpen] = useState(false);
@@ -20,9 +21,10 @@ export default function DeleteCity({ city }: { city: CityType }) {
   const handleDelete = async () => {
     try {
       await deleteCityById(city.id);
+      toast.success("City deleted successfully!");
       setOpen(false);
     } catch (error) {
-      console.error("Failed to delete city:", error);
+      toast.error("Failed to delete city.");
     }
   };
 

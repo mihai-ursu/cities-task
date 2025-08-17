@@ -1,6 +1,10 @@
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { Edit } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -13,7 +17,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-
 import {
   Select,
   SelectContent,
@@ -21,7 +24,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
 import {
   Form,
   FormControl,
@@ -30,20 +32,12 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
-import { Plus } from "lucide-react";
+import type { CityType } from "@/types/city.interface";
+import useUpdateCityById from "@/hooks/useUpdateCityById";
+import StarRating from "@/components/AddCity/StarRating";
 
-import useCreateCity from "@/hooks/useCreateCity";
-
-import StarRating from "./StarRating";
-import { useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
-
-const citySchema = z.object({
-  name: z.string().min(2, "City name must be at least 2 characters."),
-  state: z.string().min(2, "State must be at least 2 characters."),
-  country: z.string().min(2, "Country must be at least 2 characters."),
+const editCitySchema = z.object({
   touristRating: z
     .number()
     .min(1, "Minimum rating is 1")
@@ -54,37 +48,42 @@ const citySchema = z.object({
   estimatedPopulation: z.number().positive("Population must be greater than 0"),
 });
 
-export type CityFormValues = z.infer<typeof citySchema>;
+export type EditCityFormValues = z.infer<typeof editCitySchema>;
 
-export function AddCity() {
+interface EditCityProps {
+  city: CityType;
+}
+
+export default function EditCity({ city }: EditCityProps) {
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
-  const form = useForm<CityFormValues>({
-    resolver: zodResolver(citySchema),
+  const updateCityMutation = useUpdateCityById();
+
+  const form = useForm<EditCityFormValues>({
+    resolver: zodResolver(editCitySchema),
     defaultValues: {
-      name: "",
-      state: "",
-      country: "",
-      touristRating: 5,
-      dateEstablished: "",
-      estimatedPopulation: 0,
+      touristRating: city.touristRating,
+      dateEstablished: city.dateEstablished,
+      estimatedPopulation: city.estimatedPopulation,
     },
   });
 
-  const createCityMutation = useCreateCity();
+  function onSubmit(values: EditCityFormValues) {
+    const updatedCity: CityType = {
+      ...city,
+      ...values,
+    };
 
-  function onSubmit(values: CityFormValues) {
-    createCityMutation.mutate(values, {
+    updateCityMutation.mutate(updatedCity, {
       onSuccess: () => {
-        form.reset();
-        toast.success("City created successfully!");
+        toast.success("City updated successfully!");
         queryClient.invalidateQueries({ queryKey: ["cities"] });
         setOpen(false);
       },
       onError: (err: unknown) => {
         console.error(err);
         toast.error(
-          err instanceof Error ? err.message : "Error creating city."
+          err instanceof Error ? err.message : "Error updating city."
         );
       },
     });
@@ -93,64 +92,21 @@ export function AddCity() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="cursor-pointer">
-          <Plus className="h-4 w-4" />
-          Add City
+        <Button variant="outline" className="cursor-pointer">
+          <Edit className="h-4 w-4" />
+          Edit
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Add City</DialogTitle>
-          <DialogDescription>Add a new city to the list</DialogDescription>
+          <DialogTitle>Edit City</DialogTitle>
+          <DialogDescription>
+            Edit details for <strong>{city.name}</strong>
+          </DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <div className="grid gap-4">
-              <div className="grid gap-3">
-                <FormField
-                  control={form.control}
-                  name="name"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>City Name</FormLabel>
-                      <FormControl>
-                        <Input placeholder="e.g. Paris" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-              <div className="grid gap-3">
-                <FormField
-                  control={form.control}
-                  name="state"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>State / Region</FormLabel>
-                      <FormControl>
-                        <Input placeholder="e.g. Ile-de-France" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-              <div className="grid gap-3">
-                <FormField
-                  control={form.control}
-                  name="country"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Country</FormLabel>
-                      <FormControl>
-                        <Input placeholder="e.g. France" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
               <div className="grid gap-3">
                 <FormField
                   control={form.control}
@@ -266,9 +222,9 @@ export function AddCity() {
               <Button
                 type="submit"
                 className="cursor-pointer"
-                disabled={createCityMutation.isPending}
+                disabled={updateCityMutation.isPending}
               >
-                {createCityMutation.isPending ? "Adding..." : "Add City"}
+                {updateCityMutation.isPending ? "Updating..." : "Update City"}
               </Button>
             </DialogFooter>
           </form>

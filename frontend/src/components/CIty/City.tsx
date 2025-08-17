@@ -3,6 +3,7 @@ import { useGetCountryByName } from "@/hooks/useGetCountryByName";
 import { useGetCityWeather } from "@/hooks/useGetCityWeather";
 import WeatherIcon from "@/components/WeatherIcon/WeatherIcon";
 import DeleteCity from "./DeleteCity";
+import EditCity from "./EditCity";
 
 export default function City({ city }: { city: CityType }) {
   const {
@@ -24,7 +25,10 @@ export default function City({ city }: { city: CityType }) {
           <h3 className="text-xl font-bold text-gray-800">{city.name}</h3>
 
           <div className="space-y-1 text-sm">
-            <DeleteCity city={city} />
+            <div className="flex gap-2">
+              <DeleteCity city={city} />
+              <EditCity city={city} />
+            </div>
             <div>
               <span className="font-medium">ID:</span> {city.id}
             </div>

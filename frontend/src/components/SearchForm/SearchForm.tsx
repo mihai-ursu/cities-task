@@ -22,6 +22,7 @@ export default function SearchForm({ onSearch }: SearchFormProps) {
     e.preventDefault();
     if (searchQuery.trim()) {
       onSearch(searchQuery.trim());
+      setSearchQuery("");
     }
   };
 
