@@ -36,6 +36,8 @@ import { Plus } from "lucide-react";
 import useCreateCity from "@/hooks/useCreateCity";
 
 import StarRating from "./StarRating";
+import { useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
 
 const citySchema = z.object({
   name: z.string().min(2, "City name must be at least 2 characters."),
@@ -54,6 +56,8 @@ const citySchema = z.object({
 export type CityFormValues = z.infer<typeof citySchema>;
 
 export function AddCity() {
+  const queryClient = useQueryClient();
+  const [open, setOpen] = useState(false);
   const form = useForm<CityFormValues>({
     resolver: zodResolver(citySchema),
     defaultValues: {
@@ -73,6 +77,9 @@ export function AddCity() {
     createCityMutation.mutate(values, {
       onSuccess: () => {
         form.reset();
+        queryClient.invalidateQueries({ queryKey: ["cities"] });
+        setOpen(false);
+
         alert("City created successfully!");
       },
       onError: (err: unknown) => {
@@ -83,7 +90,7 @@ export function AddCity() {
   }
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button className="cursor-pointer">
           <Plus className="h-4 w-4" />
