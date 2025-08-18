@@ -22,3 +22,11 @@ from the root of the project run
 ```bash
 npm run dev
 ```
+
+### Run tests
+
+from the root of the project run
+
+```bash
+npm run test
+```
