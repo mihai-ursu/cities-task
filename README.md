@@ -19,6 +19,8 @@ npm run db:setup
 
 from the root of the project run
 
+#### the app needs a .env file created in the backend that holds the WEATHER_API_KEY for https://api.openweathermap.org
+
 ```bash
 npm run dev
 ```
